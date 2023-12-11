@@ -6,4 +6,5 @@ export interface ITask {
 	description?: string;
 	tags?: { title: string; color: string }[];
 	messages?: string[];
+	columnName: string;
 }
