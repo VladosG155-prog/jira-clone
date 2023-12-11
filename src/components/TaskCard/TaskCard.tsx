@@ -5,26 +5,29 @@ import { ItemTypes } from '../../ItemTypes';
 import { Tag } from '../Tag/Tag';
 
 interface IProps {
+	id: number;
 	title: string;
 	date: string;
 	authorName: string;
 	description?: string;
 	tags?: { title: string; color: string }[];
 	messages?: string[];
+	changeTask: (taskId: number, columnName: string) => void;
 }
 
 interface DropResult {
-	name: string;
+	title: string;
 }
 
-const TaskCard = ({ title, date, authorName, description, tags }: IProps) => {
+const TaskCard = ({ id, title, date, authorName, description, tags, changeTask }: IProps) => {
 	const [{ isDragging }, drag] = useDrag(() => ({
 		type: ItemTypes.BOX,
-		item: { name },
+		item: { title, id },
 		end: (item, monitor) => {
 			const dropResult = monitor.getDropResult<DropResult>();
+
 			if (item && dropResult) {
-				alert(`You dropped ${item.name} into ${dropResult.name}!`);
+				changeTask(item.id, dropResult.title);
 			}
 		},
 		collect: (monitor) => ({

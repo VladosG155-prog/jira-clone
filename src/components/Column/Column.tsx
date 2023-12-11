@@ -8,12 +8,13 @@ import TaskCard from '../TaskCard/TaskCard';
 interface IProps {
 	title: string;
 	tasks?: ITask[];
+	changeTask: (taskId: number, columnName: string) => void;
 }
 
-export const Column = ({ title, tasks }: IProps) => {
+export const Column = ({ title, tasks, changeTask }: IProps) => {
 	const [{ canDrop, isOver }, drop] = useDrop(() => ({
 		accept: ItemTypes.BOX,
-		drop: () => ({ name: 'Dustbin' }),
+		drop: () => ({ title: title }),
 		collect: (monitor) => ({
 			isOver: monitor.isOver(),
 			canDrop: monitor.canDrop(),
@@ -21,19 +22,15 @@ export const Column = ({ title, tasks }: IProps) => {
 	}));
 
 	const isActive = canDrop && isOver;
-	let backgroundColor = '#222';
-	if (isActive) {
-		backgroundColor = 'darkgreen';
-	} else if (canDrop) {
-		backgroundColor = 'darkkhaki';
-	}
+
+	const borderColor = isActive ? 'green' : 'lightgray';
 
 	return (
-		<Box ref={drop} background={backgroundColor} maxW="30%">
+		<Box ref={drop} p="5px" minW="30%" borderInline={`1px solid ${borderColor}`} maxW="30%">
 			<Text mb="32px" size="sm" color="gray">
 				{title.toUpperCase()}
 			</Text>
-			{tasks && tasks.map((task) => <TaskCard key={task.id} {...task} />)}
+			{tasks && tasks.map((task) => <TaskCard changeTask={changeTask} key={task.id} {...task} />)}
 		</Box>
 	);
 };
